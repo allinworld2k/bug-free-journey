@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copy & Auto-Next Email with LocalStorage</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    background: #f0f2f5;
+}
+.container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    margin-bottom: 20px;
+}
+.email {
+    font-size: 1.5rem;
+    margin: 20px 0;
+    word-break: break-all;
+    color: #333;
+    min-height: 2rem;
+}
+.stats {
+    margin-bottom: 15px;
+    color: #555;
+    font-weight: bold;
+}
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+#copyBtn {
+    background: #4caf50;
+    color: #fff;
+}
+#copyBtn:hover {
+    background: #45a049;
+}
+@media(max-width: 500px){
+    .container {
+        padding: 20px 25px;
+    }
+    .email {
+        font-size: 1.2rem;
+    }
+    button {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="stats" id="stats">Copied: 0 | Remaining: 0</div>
+    <div class="email" id="email">Loading emails...</div>
+    <button id="copyBtn" disabled>Copy</button>
+</div>
+
+<script>
+let emails = [];
+let copiedCount = 0;
+let usedEmails = new Set();
+
+// Elements
+const emailDiv = document.getElementById("email");
+const copyBtn = document.getElementById("copyBtn");
+const statsDiv = document.getElementById("stats");
+
+// GitHub raw URLs
+const githubPC = "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/pc_emails.txt";
+const githubMobile = "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/mobile_emails.txt";
+
+// Detect device
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+const githubURL = isMobile ? githubMobile : githubPC;
+
+// Load used emails from LocalStorage
+const storageKey = isMobile ? "usedEmailsMobile" : "usedEmailsPC";
+const storedUsed = localStorage.getItem(storageKey);
+if(storedUsed){
+    usedEmails = new Set(JSON.parse(storedUsed));
+}
+
+// Update stats
+function updateStats() {
+    statsDiv.textContent = `Copied: ${copiedCount} | Remaining: ${emails.length}`;
+}
+
+// Show next email
+function showNextEmail() {
+    if(emails.length === 0){
+        emailDiv.textContent = "No more emails!";
+        copyBtn.disabled = true;
+        updateStats();
+        return;
+    }
+    while(emails.length > 0 && usedEmails.has(emails[0])){
+        emails.shift();
+    }
+    if(emails.length === 0){
+        emailDiv.textContent = "No more emails!";
+        copyBtn.disabled = true;
+    } else {
+        emailDiv.textContent = emails[0];
+    }
+    updateStats();
+}
+
+// Copy & Auto-Next
+function copyEmail() {
+    if(emails.length === 0) return;
+
+    const currentEmail = emails.shift();
+    if(!usedEmails.has(currentEmail)){
+        navigator.clipboard.writeText(currentEmail)
+            .then(() => {
+                copiedCount++;
+                usedEmails.add(currentEmail);
+                // Save to localStorage
+                localStorage.setItem(storageKey, JSON.stringify([...usedEmails]));
+                showNextEmail();
+            })
+            .catch(err => alert("Failed to copy!"));
+    } else {
+        showNextEmail();
+    }
+}
+
+// Copy button click
+copyBtn.addEventListener("click", copyEmail);
+
+// Keyboard shortcut Ctrl+C
+document.addEventListener("keydown", (e) => {
+    if(e.ctrlKey && e.key === "c"){
+        copyEmail();
+        e.preventDefault();
+    }
+});
+
+// Load emails from GitHub
+fetch(githubURL)
+    .then(response => response.text())
+    .then(text => {
+        emails = text.split(/\r?\n/).filter(line => line.trim() !== "");
+        copiedCount = usedEmails.size;
+        if(emails.length > 0){
+            copyBtn.disabled = false;
+        }
+        showNextEmail();
+    })
+    .catch(err => {
+        emailDiv.textContent = "Failed to load emails!";
+        console.error(err);
+    });
+</script>
+
+</body>
+</html>
