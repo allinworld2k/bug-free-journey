@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Combined Auto Data & Number Copy</title>
+<title>Combined Auto Data & Number Copy (with PC & Mobile)</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
 body {
@@ -17,19 +17,17 @@ body {
     align-items: center;
     gap: 20px;
 }
-/* Common container style */
 .container {
     background: #1a2333;
     padding: 15px 20px;
     border-radius: 15px;
     width: 95%;
-    max-width: 500px;
+    max-width: 600px;
     box-sizing: border-box;
     text-align: center;
 }
-/* AUTO DATA section */
 .data-text {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     margin: 15px 0;
     word-break: break-word;
     min-height: 2rem;
@@ -42,75 +40,90 @@ body {
 .stats-container {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
 }
 .stats {
     font-size: 0.9rem;
     color: #ccc;
-    margin: 5px;
+    margin: 4px;
 }
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
+    gap: 10px;
+    margin-top: 10px;
     flex-wrap: wrap;
 }
 button {
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.15s;
+    border: none;
+    outline: none;
 }
-/* AUTO DATA buttons */
-button.username-btn { background: #007bff; color:#fff; width:50px; height:50px; border-radius:50%; font-size:1.5rem; display:flex; align-items:center; justify-content:center;}
-button.username-btn:hover { background: #0069d9; }
-button.gmail-btn { background: #28a745; color:#fff; width:50px; height:50px; border-radius:50%; font-size:1.5rem; display:flex; align-items:center; justify-content:center;}
-button.gmail-btn:hover { background: #218838; }
-button.name-btn { background: #ffc107; color:#333; width:50px; height:50px; border-radius:50%; font-size:1.5rem; display:flex; align-items:center; justify-content:center;}
-button.name-btn:hover { background: #e0a800; }
 
-/* Compact Number Copy section */
+/* circular icon buttons */
+.icon-btn {
+    width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;
+}
+.icon-btn:hover { transform: translateY(-3px); }
+
+/* specific colors */
+.username-btn { background:#007bff; }
+.gmail-btn { background:#28a745; color:#fff; }
+.name-btn { background:#ffc107; color:#333; }
+.pc-btn { background:#6f42c1; } /* purple */
+.mobile-btn { background:#17a2b8; } /* cyan */
+
+/* Compact Number Copy */
 textarea {
     width: 100%;
-    height: 80px;
+    height: 90px;
     border-radius:5px;
     border:none;
-    padding:5px;
+    padding:8px;
     resize:none;
-    margin-bottom:5px;
+    margin-bottom:6px;
+    box-sizing:border-box;
 }
 .numbers-list {
     display:flex;
     flex-wrap:wrap;
-    gap:5px;
-    margin-top:5px;
+    gap:6px;
+    margin-top:6px;
 }
 .numbers-list button {
     background:#007bff;
-    padding:3px 8px;
-    font-size:0.8rem;
-    transition:0.2s;
+    padding:6px 10px;
+    font-size:0.85rem;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+    color:#fff;
 }
 .numbers-list button.copied {
-    background:#00ffae; /* Copied হলে সবুজ */
+    background:#00ffae;
     color:#000;
     font-weight:bold;
 }
 .control-buttons {
     display:flex;
-    gap:5px;
+    gap:6px;
     flex-wrap:wrap;
-    margin-bottom:5px;
+    margin-bottom:6px;
 }
 .control-buttons button {
-    padding:5px 10px;
+    padding:6px 10px;
     margin:2px;
     border:none;
-    border-radius:5px;
+    border-radius:6px;
     background:#28a745;
     color:#fff;
     cursor:pointer;
     font-size:0.9rem;
+}
+@media (max-width:480px){
+    .icon-btn { width:44px; height:44px; font-size:1rem; }
 }
 </style>
 </head>
@@ -122,14 +135,18 @@ textarea {
         <div id="usernameStats" class="stats"><i class="fa-solid fa-user"></i> 0/0</div>
         <div id="gmailStats" class="stats"><i class="fa-solid fa-envelope"></i> 0/0</div>
         <div id="nameStats" class="stats"><i class="fa-solid fa-id-badge"></i> 0/0</div>
+        <div id="pcStats" class="stats"><i class="fa-solid fa-laptop"></i> 0/0</div>
+        <div id="mobileStats" class="stats"><i class="fa-solid fa-mobile-screen-button"></i> 0/0</div>
     </div>
 
     <div class="data-text" id="dataText">Loading...</div>
 
     <div class="button-container">
-        <button class="username-btn" id="usernameBtn" title="Copy Username"><i class="fa-solid fa-user"></i></button>
-        <button class="gmail-btn" id="gmailBtn" title="Copy Gmail"><i class="fa-solid fa-envelope"></i></button>
-        <button class="name-btn" id="nameBtn" title="Copy Name"><i class="fa-solid fa-id-badge"></i></button>
+        <button class="icon-btn username-btn" id="usernameBtn" title="Copy Username"><i class="fa-solid fa-user"></i></button>
+        <button class="icon-btn gmail-btn" id="gmailBtn" title="Copy Gmail"><i class="fa-solid fa-envelope"></i></button>
+        <button class="icon-btn name-btn" id="nameBtn" title="Copy Name"><i class="fa-solid fa-id-badge"></i></button>
+        <button class="icon-btn pc-btn" id="pcBtn" title="Copy PC Email"><i class="fa-solid fa-laptop"></i></button>
+        <button class="icon-btn mobile-btn" id="mobileBtn" title="Copy Mobile Email"><i class="fa-solid fa-mobile-screen-button"></i></button>
     </div>
 </div>
 
@@ -146,20 +163,23 @@ textarea {
 
 <script>
 // ---------------- AUTO DATA JS ----------------
-let data = { username: [], gmail: [], name: [] };
-let used = { username: new Set(), gmail: new Set(), name: new Set() };
-let totals = { username: 0, gmail: 0, name: 0 };
+let data = { username: [], gmail: [], name: [], pc: [], mobile: [] };
+let used = { username: new Set(), gmail: new Set(), name: new Set(), pc: new Set(), mobile: new Set() };
+let totals = { username: 0, gmail: 0, name: 0, pc: 0, mobile: 0 };
 const dataDiv = document.getElementById("dataText");
 
+// URLs: added PC + Mobile raw links (your provided raw mobile, and pc raw)
 const urls = {
     username: "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/username.txt",
-    gmail: "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/mobile_emails.txt",
-    name: "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/name.txt"
+    gmail: "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/mobile_emails.txt", // original gmail slot
+    name: "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/name.txt",
+    pc: "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/pc_emails.txt",
+    mobile: "https://raw.githubusercontent.com/allinworld2k/bug-free-journey/refs/heads/main/mobile_emails.txt"
 };
 
 function updateStats(type){
     const copied = used[type].size;
-    let icon = type === "username" ? "user" : type === "gmail" ? "envelope" : "id-badge";
+    let icon = type === "username" ? "user" : type === "gmail" ? "envelope" : type === "name" ? "id-badge" : type === "pc" ? "laptop" : "mobile-screen-button";
     document.getElementById(`${type}Stats`).innerHTML = `<i class="fa-solid fa-${icon}"></i> ${copied}/${totals[type]}`;
 }
 
@@ -170,7 +190,9 @@ function showNext(type){
     if(data[type].length===0){
         dataDiv.textContent = `🎉 All ${type}s copied!`;
     } else {
-        dataDiv.textContent = data[type][0].slice(0,30)+'...';
+        // show preview (trim if long)
+        const preview = data[type][0].length > 36 ? data[type][0].slice(0,36)+'...' : data[type][0];
+        dataDiv.textContent = preview;
         dataDiv.classList.remove("copied");
     }
     updateStats(type);
@@ -180,43 +202,69 @@ function copyData(type){
     if(data[type].length===0) return;
     const current = data[type][0];
     if(!used[type].has(current)){
+        // fallback copy method for broad browser support
         const temp = document.createElement("textarea");
         temp.value = current;
         document.body.appendChild(temp);
         temp.select();
         temp.setSelectionRange(0,99999);
-        const success = document.execCommand("copy");
+        let success = false;
+        try {
+            success = document.execCommand("copy");
+        } catch(e){ success = false; }
         document.body.removeChild(temp);
 
+        // try navigator.clipboard if execCommand failed and secure context available
+        const afterCopy = (ok)=>{
+            if(ok){
+                used[type].add(current);
+                localStorage.setItem(`used_${type}`, JSON.stringify([...used[type]]));
+                dataDiv.classList.add("copied");
+                dataDiv.textContent = `✅ Copied ${type}`;
+                setTimeout(()=>showNext(type),700);
+            } else {
+                alert("❌ Copy failed. Use Ctrl+C / Tap & Hold manually.");
+            }
+        };
+
         if(success){
-            used[type].add(current);
-            localStorage.setItem(`used_${type}`, JSON.stringify([...used[type]]));
-            dataDiv.classList.add("copied");
-            dataDiv.textContent = `✅ Copied ${type}`;
-            setTimeout(()=>showNext(type),800);
+            afterCopy(true);
+        } else if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(current).then(()=>afterCopy(true)).catch(()=>afterCopy(false));
         } else {
-            alert("❌ Copy failed. Use Ctrl+C / Tap & Hold manually.");
+            afterCopy(false);
         }
     }
 }
 
-["username","gmail","name"].forEach(type=>{
+// initialize loaders and buttons for each type
+["username","gmail","name","pc","mobile"].forEach(type=>{
+    // restore used sets from localStorage
     const stored = localStorage.getItem(`used_${type}`);
-    if(stored) used[type] = new Set(JSON.parse(stored));
+    if(stored) try { used[type] = new Set(JSON.parse(stored)); } catch(e){ used[type] = new Set(); }
 
+    // fetch data file (won't run here on server — runs in user's browser)
     fetch(urls[type])
-    .then(res=>res.text())
+    .then(res=>{
+        if(!res.ok) throw new Error('Network response not ok');
+        return res.text();
+    })
     .then(txt=>{
-        data[type]=txt.split(/\r?\n/).filter(line=>line.trim()!=="");
-        totals[type]=data[type].length;
+        data[type] = txt.split(/\r?\n/).map(l=>l.trim()).filter(l=>l!=="");
+        totals[type] = data[type].length;
         showNext(type);
     })
     .catch(err=>{
         console.error(`Error loading ${type}`,err);
+        // If first load and other types already loaded, don't overwrite message
         dataDiv.textContent = `❌ Failed to load ${type} data`;
+        totals[type] = 0;
+        updateStats(type);
     });
 
-    document.getElementById(`${type}Btn`).onclick = ()=>copyData(type);
+    // attach button handler
+    const btn = document.getElementById(`${type}Btn`);
+    if(btn) btn.onclick = ()=>copyData(type);
 });
 
 // ---------------- COMPACT NUMBER COPY JS ----------------
@@ -225,7 +273,8 @@ let numbersArray = [];
 document.getElementById("generateBtn").onclick = function(){
     const input = document.getElementById("numbersInput").value;
     const numbers = input.split(/\r?\n/).map(n => n.trim()).filter(n => n!=="");
-    numbersArray = numbers.map(n => '+'+n);
+    // ensure plus only once and basic normalization (do not validate country codes)
+    numbersArray = numbers.map(n => n.startsWith("+") ? n : '+'+n);
     const listDiv = document.getElementById("numbersList");
     listDiv.innerHTML="";
     numbersArray.forEach(num=>{
@@ -233,27 +282,46 @@ document.getElementById("generateBtn").onclick = function(){
         btn.textContent = num;
         btn.dataset.copied = "false";
         btn.onclick = ()=> {
-            navigator.clipboard.writeText(num).then(()=>{
-                btn.dataset.copied = "true";
-                btn.classList.add("copied");
-            });
+            if(navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(num).then(()=>{
+                    btn.dataset.copied = "true";
+                    btn.classList.add("copied");
+                }).catch(()=>{
+                    // fallback
+                    const t = document.createElement("textarea");
+                    t.value = num; document.body.appendChild(t); t.select();
+                    try { document.execCommand("copy"); btn.dataset.copied="true"; btn.classList.add("copied"); } catch(e){}
+                    document.body.removeChild(t);
+                });
+            } else {
+                const t = document.createElement("textarea");
+                t.value = num; document.body.appendChild(t); t.select();
+                try { document.execCommand("copy"); btn.dataset.copied="true"; btn.classList.add("copied"); } catch(e){ alert("Copy failed"); }
+                document.body.removeChild(t);
+            }
         };
         listDiv.appendChild(btn);
     });
 };
 
-document.getElementById("copyAllBtn").onclick = ()=>{
+document.getElementById("copyAllBtn").onclick = ()=> {
     if(numbersArray.length===0) return;
-    navigator.clipboard.writeText(numbersArray.join("\n")).then(()=>{
-        document.querySelectorAll("#numbersList button").forEach(btn=>{
-            btn.dataset.copied = "true";
-            btn.classList.add("copied");
-        });
-        alert("✅ All numbers copied!");
-    });
+    const text = numbersArray.join("\n");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(()=>{
+            document.querySelectorAll("#numbersList button").forEach(btn=>{
+                btn.dataset.copied = "true"; btn.classList.add("copied");
+            });
+            alert("✅ All numbers copied!");
+        }).catch(()=>{ alert("❌ Copy failed"); });
+    } else {
+        const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select();
+        try { document.execCommand("copy"); document.querySelectorAll("#numbersList button").forEach(btn=>{btn.dataset.copied="true"; btn.classList.add("copied");}); alert("✅ All numbers copied!"); } catch(e){ alert("❌ Copy failed"); }
+        document.body.removeChild(t);
+    }
 };
 
-document.getElementById("clearBtn").onclick = ()=>{
+document.getElementById("clearBtn").onclick = ()=> {
     numbersArray=[];
     document.getElementById("numbersList").innerHTML="";
     document.getElementById("numbersInput").value="";
