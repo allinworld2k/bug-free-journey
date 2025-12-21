@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Tools</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#0b1220;
+  color:#fff;
+  font-family:system-ui,sans-serif;
+  padding:14px;
+}
+
+/* TOOL CARD */
+.tool{
+  background:#111a2e;
+  border:1px solid #1f2937;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:14px;
+}
+.tool h3{
+  margin:0 0 10px;
+  font-size:15px;
+}
+
+input, textarea{
+  width:100%;
+  background:#0b1220;
+  border:none;
+  border-radius:10px;
+  padding:10px;
+  color:#fff;
+  margin-bottom:8px;
+  font-size:14px;
+}
+
+button{
+  padding:10px 14px;
+  border:none;
+  border-radius:10px;
+  background:#16a34a;
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.output{
+  background:#0b1220;
+  border-radius:10px;
+  padding:10px;
+  margin-top:8px;
+  font-size:14px;
+  white-space:pre-wrap;
+}
+
+.copy{
+  margin-top:6px;
+  font-size:12px;
+  opacity:.7;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- AI EMAIL WRITER -->
+<div class="tool">
+  <h3>📧 AI Email Writer</h3>
+  <input id="emailTopic" placeholder="Email purpose">
+  <button onclick="genEmail()">Generate</button>
+  <div class="output" id="emailOut"></div>
+  <div class="copy" onclick="copyText('emailOut')">Copy</div>
+</div>
+
+<!-- AI HASHTAG -->
+<div class="tool">
+  <h3>#️⃣ AI Hashtag Generator</h3>
+  <input id="hashTopic" placeholder="Keyword">
+  <button onclick="genHash()">Generate</button>
+  <div class="output" id="hashOut"></div>
+  <div class="copy" onclick="copyText('hashOut')">Copy</div>
+</div>
+
+<!-- AI PROMPT -->
+<div class="tool">
+  <h3>🤖 AI Prompt Generator</h3>
+  <input id="promptTopic" placeholder="Topic">
+  <button onclick="genPrompt()">Generate</button>
+  <div class="output" id="promptOut"></div>
+  <div class="copy" onclick="copyText('promptOut')">Copy</div>
+</div>
+
+<script>
+function genEmail(){
+  let t = document.getElementById("emailTopic").value.trim();
+  if(!t) return;
+  document.getElementById("emailOut").innerText =
+`Hello Sir/Madam,
+
+I am writing regarding ${t}.
+Please let me know your response.
+
+Best regards`;
+}
+
+function genHash(){
+  let t = document.getElementById("hashTopic").value.trim();
+  if(!t) return;
+  document.getElementById("hashOut").innerText =
+`#${t} #${t}tips #${t}life #onlinework #success`;
+}
+
+function genPrompt(){
+  let t = document.getElementById("promptTopic").value.trim();
+  if(!t) return;
+  document.getElementById("promptOut").innerText =
+`Write a detailed and simple explanation about "${t}".`;
+}
+
+function copyText(id){
+  navigator.clipboard.writeText(
+    document.getElementById(id).innerText
+  );
+}
+</script>
+
+</body>
+</html>
