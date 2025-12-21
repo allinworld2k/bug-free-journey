@@ -14,8 +14,6 @@ body{
   font-family:system-ui,sans-serif;
   padding:14px;
 }
-
-/* TOOL CARD */
 .tool{
   background:#111a2e;
   border:1px solid #1f2937;
@@ -24,10 +22,9 @@ body{
   margin-bottom:14px;
 }
 .tool h3{
-  margin:0 0 10px;
+  margin:0 0 8px;
   font-size:15px;
 }
-
 input, textarea{
   width:100%;
   background:#0b1220;
@@ -38,7 +35,6 @@ input, textarea{
   margin-bottom:8px;
   font-size:14px;
 }
-
 button{
   padding:10px 14px;
   border:none;
@@ -48,7 +44,6 @@ button{
   font-size:14px;
   cursor:pointer;
 }
-
 .output{
   background:#0b1220;
   border-radius:10px;
@@ -57,7 +52,6 @@ button{
   font-size:14px;
   white-space:pre-wrap;
 }
-
 .copy{
   margin-top:6px;
   font-size:12px;
@@ -69,64 +63,109 @@ button{
 
 <body>
 
-<!-- AI EMAIL WRITER -->
+<!-- AI EMAIL -->
 <div class="tool">
   <h3>📧 AI Email Writer</h3>
   <input id="emailTopic" placeholder="Email purpose">
-  <button onclick="genEmail()">Generate</button>
+  <button onclick="email()">Generate</button>
   <div class="output" id="emailOut"></div>
-  <div class="copy" onclick="copyText('emailOut')">Copy</div>
+  <div class="copy" onclick="copy('emailOut')">Copy</div>
 </div>
 
-<!-- AI HASHTAG -->
+<!-- HASHTAG -->
 <div class="tool">
-  <h3>#️⃣ AI Hashtag Generator</h3>
+  <h3>#️⃣ Hashtag Generator</h3>
   <input id="hashTopic" placeholder="Keyword">
-  <button onclick="genHash()">Generate</button>
+  <button onclick="hash()">Generate</button>
   <div class="output" id="hashOut"></div>
-  <div class="copy" onclick="copyText('hashOut')">Copy</div>
+  <div class="copy" onclick="copy('hashOut')">Copy</div>
 </div>
 
-<!-- AI PROMPT -->
+<!-- PROMPT -->
 <div class="tool">
   <h3>🤖 AI Prompt Generator</h3>
   <input id="promptTopic" placeholder="Topic">
-  <button onclick="genPrompt()">Generate</button>
+  <button onclick="promptGen()">Generate</button>
   <div class="output" id="promptOut"></div>
-  <div class="copy" onclick="copyText('promptOut')">Copy</div>
+  <div class="copy" onclick="copy('promptOut')">Copy</div>
+</div>
+
+<!-- FACEBOOK -->
+<div class="tool">
+  <h3>📘 Facebook Post Maker</h3>
+  <input id="fbTitle" placeholder="Post topic">
+  <textarea id="fbText" placeholder="Details"></textarea>
+  <button onclick="fb()">Generate</button>
+  <div class="output" id="fbOut"></div>
+  <div class="copy" onclick="copy('fbOut')">Copy</div>
+</div>
+
+<!-- TELEGRAM -->
+<div class="tool">
+  <h3>✈️ Telegram Post Maker</h3>
+  <input id="tgTitle" placeholder="Post title">
+  <textarea id="tgText" placeholder="Post content"></textarea>
+  <button onclick="tg()">Generate</button>
+  <div class="output" id="tgOut"></div>
+  <div class="copy" onclick="copy('tgOut')">Copy</div>
+</div>
+
+<!-- YOUTUBE COMMUNITY -->
+<div class="tool">
+  <h3>▶️ YouTube Community Post</h3>
+  <input id="ytTitle" placeholder="Topic">
+  <textarea id="ytText" placeholder="Details"></textarea>
+  <button onclick="yt()">Generate</button>
+  <div class="output" id="ytOut"></div>
+  <div class="copy" onclick="copy('ytOut')">Copy</div>
+</div>
+
+<!-- INSTAGRAM -->
+<div class="tool">
+  <h3>📸 Instagram Caption</h3>
+  <input id="igTopic" placeholder="Photo topic">
+  <button onclick="ig()">Generate</button>
+  <div class="output" id="igOut"></div>
+  <div class="copy" onclick="copy('igOut')">Copy</div>
+</div>
+
+<!-- WHATSAPP -->
+<div class="tool">
+  <h3>💬 WhatsApp Message</h3>
+  <input id="waTitle" placeholder="Message title">
+  <textarea id="waText" placeholder="Message body"></textarea>
+  <button onclick="wa()">Generate</button>
+  <div class="output" id="waOut"></div>
+  <div class="copy" onclick="copy('waOut')">Copy</div>
 </div>
 
 <script>
-function genEmail(){
-  let t = document.getElementById("emailTopic").value.trim();
-  if(!t) return;
-  document.getElementById("emailOut").innerText =
-`Hello Sir/Madam,
-
-I am writing regarding ${t}.
-Please let me know your response.
-
-Best regards`;
+function email(){
+ emailOut.innerText=`Hello,\n\nRegarding ${emailTopic.value}.\nPlease let me know.\n\nThanks`;
 }
-
-function genHash(){
-  let t = document.getElementById("hashTopic").value.trim();
-  if(!t) return;
-  document.getElementById("hashOut").innerText =
-`#${t} #${t}tips #${t}life #onlinework #success`;
+function hash(){
+ hashOut.innerText=`#${hashTopic.value} #onlinework #success`;
 }
-
-function genPrompt(){
-  let t = document.getElementById("promptTopic").value.trim();
-  if(!t) return;
-  document.getElementById("promptOut").innerText =
-`Write a detailed and simple explanation about "${t}".`;
+function promptGen(){
+ promptOut.innerText=`Write detailed content about "${promptTopic.value}".`;
 }
-
-function copyText(id){
-  navigator.clipboard.writeText(
-    document.getElementById(id).innerText
-  );
+function fb(){
+ fbOut.innerText=`🔥 ${fbTitle.value}\n\n${fbText.value}\n\n#onlinework`;
+}
+function tg(){
+ tgOut.innerText=`📢 ${tgTitle.value}\n\n${tgText.value}`;
+}
+function yt(){
+ ytOut.innerText=`📢 ${ytTitle.value}\n\n${ytText.value}\n\n👍 Like | 🔔 Subscribe`;
+}
+function ig(){
+ igOut.innerText=`${igTopic.value} ✨\n#success #daily`;
+}
+function wa(){
+ waOut.innerText=`*${waTitle.value}*\n\n${waText.value}`;
+}
+function copy(id){
+ navigator.clipboard.writeText(document.getElementById(id).innerText);
 }
 </script>
 
