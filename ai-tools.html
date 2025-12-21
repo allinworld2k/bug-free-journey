@@ -3,98 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Tools</title>
+<title>All Tips BD – AI Tools</title>
 
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  background:#0b1220;
+  background:linear-gradient(180deg,#0b1220,#020617);
   color:#fff;
-  font-family:system-ui,sans-serif;
-  padding:14px;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont;
+  padding:16px;
 }
+
+/* TOOL CARD */
 .tool{
-  background:#111a2e;
+  background:rgba(17,26,46,.9);
+  backdrop-filter:blur(10px);
   border:1px solid #1f2937;
-  border-radius:16px;
-  padding:14px;
-  margin-bottom:14px;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  transition:.3s ease;
+}
+.tool:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 40px rgba(0,0,0,.5);
 }
 .tool h3{
-  margin:0 0 8px;
-  font-size:15px;
+  margin:0 0 10px;
+  font-size:16px;
+  font-weight:600;
 }
-input, textarea{
+
+/* INPUT */
+input, textarea, select{
   width:100%;
-  background:#0b1220;
-  border:none;
-  border-radius:10px;
-  padding:10px;
+  background:#020617;
+  border:1px solid #1f2937;
+  border-radius:12px;
+  padding:12px;
   color:#fff;
-  margin-bottom:8px;
+  margin-bottom:10px;
   font-size:14px;
 }
+textarea{min-height:90px;resize:vertical}
+
+/* BUTTON */
 button{
-  padding:10px 14px;
+  width:100%;
+  padding:12px;
   border:none;
-  border-radius:10px;
-  background:#16a34a;
+  border-radius:14px;
+  background:linear-gradient(135deg,#16a34a,#22c55e);
   color:#fff;
   font-size:14px;
+  font-weight:600;
   cursor:pointer;
+  transition:.25s ease;
 }
+button:hover{
+  transform:scale(1.02);
+  filter:brightness(1.1);
+}
+
+/* OUTPUT */
 .output{
-  background:#0b1220;
-  border-radius:10px;
-  padding:10px;
-  margin-top:8px;
+  background:#020617;
+  border:1px solid #1f2937;
+  border-radius:14px;
+  padding:12px;
+  margin-top:12px;
   font-size:14px;
   white-space:pre-wrap;
+  line-height:1.6;
 }
+
+/* COPY */
 .copy{
-  margin-top:6px;
+  margin-top:8px;
   font-size:12px;
-  opacity:.7;
+  opacity:.75;
   cursor:pointer;
+  text-align:right;
 }
+.copy:hover{opacity:1}
 </style>
 </head>
 
 <body>
 
-<!-- AI EMAIL -->
+<!-- SMART EXPAND AI -->
 <div class="tool">
-  <h3>📧 AI Email Writer</h3>
-  <input id="emailTopic" placeholder="Email purpose">
-  <button onclick="email()">Generate</button>
-  <div class="output" id="emailOut"></div>
-  <div class="copy" onclick="copy('emailOut')">Copy</div>
+  <h3>🧠 Smart Expand AI</h3>
+  <input id="shortInput" placeholder="Write short idea (example: online income)">
+  <button onclick="expandAI()">Expand with AI</button>
+  <div class="output" id="expandOut"></div>
+  <div class="copy" onclick="copy('expandOut')">Copy</div>
 </div>
 
-<!-- HASHTAG -->
+<!-- SMART CONTENT -->
 <div class="tool">
-  <h3>#️⃣ Hashtag Generator</h3>
-  <input id="hashTopic" placeholder="Keyword">
-  <button onclick="hash()">Generate</button>
-  <div class="output" id="hashOut"></div>
-  <div class="copy" onclick="copy('hashOut')">Copy</div>
+  <h3>🚀 Smart Content Generator</h3>
+  <input id="smartTopic" placeholder="Content topic">
+  <select id="smartPlatform">
+    <option value="fb">Facebook</option>
+    <option value="tg">Telegram</option>
+    <option value="yt">YouTube</option>
+    <option value="ig">Instagram</option>
+  </select>
+  <button onclick="smartGen()">Generate</button>
+  <div class="output" id="smartOut"></div>
+  <div class="copy" onclick="copy('smartOut')">Copy</div>
 </div>
 
-<!-- PROMPT -->
+<!-- AI REWRITE -->
 <div class="tool">
-  <h3>🤖 AI Prompt Generator</h3>
-  <input id="promptTopic" placeholder="Topic">
-  <button onclick="promptGen()">Generate</button>
-  <div class="output" id="promptOut"></div>
-  <div class="copy" onclick="copy('promptOut')">Copy</div>
+  <h3>✨ AI Rewrite & Improve</h3>
+  <textarea id="rewriteIn" placeholder="Paste your text here"></textarea>
+  <button onclick="rewrite()">Improve Text</button>
+  <div class="output" id="rewriteOut"></div>
+  <div class="copy" onclick="copy('rewriteOut')">Copy</div>
 </div>
 
-<!-- FACEBOOK -->
+<!-- AI IDEA -->
+<div class="tool">
+  <h3>💡 AI Idea Generator</h3>
+  <input id="ideaTopic" placeholder="Topic name">
+  <button onclick="genIdea()">Generate Ideas</button>
+  <div class="output" id="ideaOut"></div>
+  <div class="copy" onclick="copy('ideaOut')">Copy</div>
+</div>
+
+<!-- FB POST -->
 <div class="tool">
   <h3>📘 Facebook Post Maker</h3>
   <input id="fbTitle" placeholder="Post topic">
-  <textarea id="fbText" placeholder="Details"></textarea>
+  <textarea id="fbText" placeholder="Post details"></textarea>
   <button onclick="fb()">Generate</button>
   <div class="output" id="fbOut"></div>
   <div class="copy" onclick="copy('fbOut')">Copy</div>
@@ -110,62 +155,60 @@ button{
   <div class="copy" onclick="copy('tgOut')">Copy</div>
 </div>
 
-<!-- YOUTUBE COMMUNITY -->
-<div class="tool">
-  <h3>▶️ YouTube Community Post</h3>
-  <input id="ytTitle" placeholder="Topic">
-  <textarea id="ytText" placeholder="Details"></textarea>
-  <button onclick="yt()">Generate</button>
-  <div class="output" id="ytOut"></div>
-  <div class="copy" onclick="copy('ytOut')">Copy</div>
-</div>
-
-<!-- INSTAGRAM -->
-<div class="tool">
-  <h3>📸 Instagram Caption</h3>
-  <input id="igTopic" placeholder="Photo topic">
-  <button onclick="ig()">Generate</button>
-  <div class="output" id="igOut"></div>
-  <div class="copy" onclick="copy('igOut')">Copy</div>
-</div>
-
-<!-- WHATSAPP -->
-<div class="tool">
-  <h3>💬 WhatsApp Message</h3>
-  <input id="waTitle" placeholder="Message title">
-  <textarea id="waText" placeholder="Message body"></textarea>
-  <button onclick="wa()">Generate</button>
-  <div class="output" id="waOut"></div>
-  <div class="copy" onclick="copy('waOut')">Copy</div>
-</div>
-
 <script>
-function email(){
- emailOut.innerText=`Hello,\n\nRegarding ${emailTopic.value}.\nPlease let me know.\n\nThanks`;
+function expandAI(){
+  let t=shortInput.value.trim();
+  if(!t)return;
+  expandOut.innerText =
+`"${t}" – AI Explanation
+
+${t} is a powerful concept in the digital world.
+It helps people grow skills, save time, and improve productivity.
+
+Benefits:
+• Easy to start
+• Scalable
+• Useful for beginners & professionals
+
+AI Advice:
+Learn step by step and apply smart strategies for long-term success.`;
 }
-function hash(){
- hashOut.innerText=`#${hashTopic.value} #onlinework #success`;
+
+function smartGen(){
+  let t=smartTopic.value.trim(), p=smartPlatform.value;
+  if(!t)return;
+  let o={
+    fb:`🔥 ${t}\n\nPractical tips for online workers.\n👉 Follow for more`,
+    tg:`📢 ${t}\n\nImportant update. Stay connected.`,
+    yt:`📌 ${t}\n\n👍 Like | 🔔 Subscribe`,
+    ig:`${t} ✨\n#success #onlinework`
+  };
+  smartOut.innerText=o[p];
 }
-function promptGen(){
- promptOut.innerText=`Write detailed content about "${promptTopic.value}".`;
+
+function rewrite(){
+  let t=rewriteIn.value.trim();
+  if(!t)return;
+  rewriteOut.innerText=`Improved Version:\n\n${t}\n\nThis version is clearer, professional and easy to read.`;
 }
-function fb(){
- fbOut.innerText=`🔥 ${fbTitle.value}\n\n${fbText.value}\n\n#onlinework`;
+
+function genIdea(){
+  let t=ideaTopic.value.trim();
+  if(!t)return;
+  ideaOut.innerText=
+`5 Smart Ideas about ${t}:
+1. Beginner guide
+2. Common mistakes
+3. Earning methods
+4. Useful tools
+5. Advanced tips`;
 }
-function tg(){
- tgOut.innerText=`📢 ${tgTitle.value}\n\n${tgText.value}`;
-}
-function yt(){
- ytOut.innerText=`📢 ${ytTitle.value}\n\n${ytText.value}\n\n👍 Like | 🔔 Subscribe`;
-}
-function ig(){
- igOut.innerText=`${igTopic.value} ✨\n#success #daily`;
-}
-function wa(){
- waOut.innerText=`*${waTitle.value}*\n\n${waText.value}`;
-}
+
+function fb(){fbOut.innerText=`🔥 ${fbTitle.value}\n\n${fbText.value}\n\n#onlinework`;}
+function tg(){tgOut.innerText=`📢 ${tgTitle.value}\n\n${tgText.value}`;}
+
 function copy(id){
- navigator.clipboard.writeText(document.getElementById(id).innerText);
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
 }
 </script>
 
