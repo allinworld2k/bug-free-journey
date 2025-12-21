@@ -47,7 +47,7 @@ body{
 /* LAYOUT */
 .layout{
   display:flex;
-  height:calc(100vh - 56px - 44px);
+  height:calc(100vh - 56px);
   position:relative;
 }
 
@@ -123,51 +123,35 @@ body{
   display:block;
 }
 
-/* MAIN FOOTER */
-.footer{
-  height:44px;
-  background:#0b1220;
-  border-top:1px solid #1f2937;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  font-size:13px;
-}
-.footer a{
-  color:#22c55e;
-  text-decoration:none;
-}
-
-/* FLOATING TG BUTTONS */
+/* CLEAN FLOATING TG BAR */
 .tg-footer{
   position:fixed;
-  bottom:58px;
+  bottom:18px;
   left:50%;
   transform:translateX(-50%);
+  background:rgba(17,26,46,.85);
+  backdrop-filter:blur(8px);
+  border:1px solid #1f2937;
+  border-radius:999px;
+  padding:6px 14px;
   display:flex;
-  gap:12px;
+  gap:10px;
+  align-items:center;
+  font-size:13px;
   z-index:9999;
 }
 
-.tg-btn{
+.tg-footer a{
+  color:#22c55e;
+  text-decoration:none;
   display:flex;
   align-items:center;
-  gap:6px;
-  padding:8px 14px;
-  border-radius:999px;
-  background:#0f172a;
-  color:#e5e7eb;
-  text-decoration:none;
-  font-size:13px;
-  border:1px solid #1f2937;
-  box-shadow:0 6px 16px rgba(0,0,0,.4);
-  transition:.25s;
+  gap:5px;
+  padding:4px 6px;
 }
 
-.tg-btn:hover{
-  background:#16a34a;
-  color:#fff;
+.tg-footer span{
+  color:#374151;
 }
 </style>
 </head>
@@ -221,20 +205,11 @@ body{
 
 </div>
 
-<!-- FLOATING TG BUTTONS -->
+<!-- FLOATING TG BAR -->
 <div class="tg-footer">
-  <a href="https://t.me/all_tips_bd" target="_blank" class="tg-btn">
-    📩 TG Channel
-  </a>
-  <a href="https://t.me/mr_ruhul_001" target="_blank" class="tg-btn">
-    👤 Contact
-  </a>
-</div>
-
-<!-- MAIN FOOTER -->
-<div class="footer">
-  <a href="https://t.me/all_tips_bd" target="_blank">Telegram Channel</a> |
-  <a href="https://t.me/mr_ruhul_001" target="_blank">Contact</a>
+  <a href="https://t.me/all_tips_bd" target="_blank">📨 TG Channel</a>
+  <span>|</span>
+  <a href="https://t.me/mr_ruhul_001" target="_blank">👤 Contact</a>
 </div>
 
 <script>
