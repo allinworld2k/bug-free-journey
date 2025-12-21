@@ -207,6 +207,7 @@ body{
     <div class="menu">
       <a class="active" onclick="showTool('home', this)">🏠 Home</a>
       <a onclick="showTool('gmail', this)">📧 Gmail Tool</a>
+      <a onclick="showTool('google', this)">🔐 Google Login</a>
       <a class="disabled">🤖 AI Tool</a>
       <a class="disabled">💼 Online Work</a>
     </div>
@@ -223,7 +224,12 @@ body{
 
     <!-- GMAIL TOOL -->
     <iframe id="tool-gmail" class="tool-frame" src="page1.html"></iframe>
-
+<iframe
+  id="tool-google"
+  class="tool-frame"
+  src="google-login.html">
+</iframe>
+    
   </div>
 </div>
 
