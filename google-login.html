@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Login</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:linear-gradient(135deg,#020617,#0b1220);
+  color:#fff;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card{
+  background:rgba(17,26,46,.95);
+  backdrop-filter:blur(10px);
+  padding:30px 26px;
+  border-radius:22px;
+  max-width:420px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,.6);
+  border:1px solid #1f2937;
+}
+
+.icon{
+  font-size:44px;
+  margin-bottom:10px;
+}
+
+h1{
+  margin:0;
+  font-size:24px;
+  font-weight:600;
+}
+
+p{
+  margin:12px 0 20px;
+  font-size:14px;
+  color:#cbd5f5;
+}
+
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  text-decoration:none;
+  font-size:15px;
+  font-weight:500;
+  margin-top:12px;
+  transition:.25s;
+}
+
+.btn.primary{
+  background:#16a34a;
+  color:#fff;
+}
+.btn.primary:hover{
+  background:#22c55e;
+}
+
+.btn.secondary{
+  background:#0b1220;
+  border:1px solid #1f2937;
+  color:#e5e7eb;
+}
+.btn.secondary:hover{
+  border-color:#22c55e;
+  color:#22c55e;
+}
+
+.note{
+  margin-top:18px;
+  font-size:12px;
+  color:#9ca3af;
+  line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="icon">🔐</div>
+
+  <h1>Google Account</h1>
+
+  <p>
+    Sign in securely using your Google account.
+    No data is collected or stored.
+  </p>
+
+  <!-- GOOGLE LOGIN -->
+  <a href="https://accounts.google.com" target="_blank" class="btn primary">
+    Sign in with Google
+  </a>
+
+  <!-- OPEN GMAIL -->
+  <a href="https://mail.google.com" target="_blank" class="btn secondary">
+    Open Gmail Inbox
+  </a>
+
+  <div class="note
