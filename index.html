@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,14 +65,14 @@ body{
   transition:.25s ease;
   z-index:50;
 }
-.sidebar.show{
-  left:0;
-}
+.sidebar.show{ left:0; }
+
 .sidebar h3{
   margin:0 0 12px;
   font-size:14px;
   opacity:.8;
 }
+
 .menu a{
   display:block;
   padding:10px 12px;
@@ -99,9 +100,7 @@ body{
   display:none;
   z-index:40;
 }
-.overlay.show{
-  display:block;
-}
+.overlay.show{ display:block; }
 
 /* MAIN */
 .main{
@@ -119,11 +118,9 @@ body{
   border:none;
   display:none;
 }
-.tool-frame.active{
-  display:block;
-}
+.tool-frame.active{ display:block; }
 
-/* CLEAN FLOATING TG BAR */
+/* FLOATING TG BAR */
 .tg-footer{
   position:fixed;
   bottom:18px;
@@ -140,7 +137,6 @@ body{
   font-size:13px;
   z-index:9999;
 }
-
 .tg-footer a{
   color:#22c55e;
   text-decoration:none;
@@ -149,10 +145,7 @@ body{
   gap:5px;
   padding:4px 6px;
 }
-
-.tg-footer span{
-  color:#374151;
-}
+.tg-footer span{ color:#374151; }
 </style>
 </head>
 
@@ -176,6 +169,7 @@ body{
     <div class="menu">
       <a class="active" onclick="showTool('home', this)">🏠 Home</a>
       <a onclick="showTool('gmail', this)">📧 Gmail Tool</a>
+      <a onclick="showTool('googlelogin', this)">🔐 Google Login</a>
       <a class="disabled">🤖 AI Tool</a>
       <a class="disabled">💼 Online Work</a>
     </div>
@@ -187,19 +181,14 @@ body{
   <!-- MAIN -->
   <div class="main">
 
-    <!-- HOME PAGE -->
-    <iframe
-      id="tool-home"
-      class="tool-frame active"
-      src="page2.html">
-    </iframe>
+    <!-- HOME -->
+    <iframe id="tool-home" class="tool-frame active" src="page2.html"></iframe>
 
-    <!-- GMAIL TOOL PAGE -->
-    <iframe
-      id="tool-gmail"
-      class="tool-frame"
-      src="page1.html">
-    </iframe>
+    <!-- GMAIL -->
+    <iframe id="tool-gmail" class="tool-frame" src="page1.html"></iframe>
+
+    <!-- GOOGLE LOGIN -->
+    <iframe id="tool-googlelogin" class="tool-frame" src="google-login.html"></iframe>
 
   </div>
 
@@ -217,19 +206,15 @@ function toggleMenu(){
   sidebar.classList.toggle("show");
   overlay.classList.toggle("show");
 }
-
 function closeMenu(){
   sidebar.classList.remove("show");
   overlay.classList.remove("show");
 }
-
 function showTool(name, el){
   document.querySelectorAll(".menu a").forEach(a=>a.classList.remove("active"));
   el.classList.add("active");
-
   document.querySelectorAll(".tool-frame").forEach(f=>f.classList.remove("active"));
   document.getElementById("tool-"+name).classList.add("active");
-
   closeMenu();
 }
 </script>
