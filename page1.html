@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gmail Account Tool</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:#0b1220;
+  color:#fff;
+}
+.app{
+  padding:15px;
+  padding-bottom:80px;
+}
+.card{
+  background:#111a2e;
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:15px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.channel-name{
+  font-size:16px;
+  font-weight:600;
+}
+.counter{
+  font-size:13px;
+  opacity:.8;
+}
+label{
+  font-size:14px;
+  opacity:.85;
+}
+input{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  margin-bottom:4px;
+  border-radius:12px;
+  border:none;
+  background:#0b1220;
+  color:#fff;
+  font-size:16px;
+}
+.dropdown{
+  background:#0b1220;
+  border-radius:12px;
+  overflow:hidden;
+  display:none;
+  max-height:200px;
+  overflow-y:auto;
+}
+.drop-item{
+  padding:10px 12px;
+  border-top:1px solid #1f2937;
+  cursor:pointer;
+}
+.drop-item:hover{
+  background:#1f2937;
+}
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+button{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#16a34a;
+  color:#fff;
+}
+button.clear{
+  background:#dc2626;
+}
+.output .item{
+  background:#0b1220;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:8px;
+  cursor:pointer;
+}
+.info{
+  font-size:14px;
+  opacity:.8;
+  margin-top:8px;
+}
+.toast{
+  position:fixed;
+  bottom:90px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#16a34a;
+  padding:10px 16px;
+  border-radius:20px;
+  font-size:14px;
+  display:none;
+  z-index:1000;
+}
+
+/* footer (best style) */
+.footer-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#0b1220;
+  border-top:1px solid #1f2937;
+  padding:8px 12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  z-index:999;
+}
+.footer-bar span{
+  color:#374151;
+}
+.footer-bar a{
+  color:#e5e7eb;
+  text-decoration:none;
+}
+.footer-bar .pill{
+  background:#111a2e;
+  padding:4px 10px;
+  border-radius:999px;
+  transition:all .2s ease;
+}
+.footer-bar .pill:hover{
+  background:#16a34a;
+  color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="card topbar">
+    <div class="channel-name">Gmail Account</div>
+    <div class="counter" id="copyCount">Copied: 0</div>
+  </div>
+
+  <!-- INPUT -->
+  <div class="card">
+    <label>Gmail address</label>
+    <input id="email" placeholder="example@gmail.com"
+           onfocus="filterHistory()" oninput="filterHistory()">
+    <div class="dropdown" id="history"></div>
+
+    <label>Amount</label>
+    <input id="count" type="number" value="10">
+
+    <div class="buttons">
+      <button onclick="generate()">Generate</button>
+      <button class="clear" onclick="clearOutput()">Clear</button>
+    </div>
+
+    <div class="info">
+      Click an email to copy and remove it permanently.
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="card output" id="output"></div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Copied</div>
+
+<!-- FOOTER -->
+<div class="footer-bar">
+  <a href="https://t.me/all_tips_bd" target="_blank" class="pill">📨 TG Channel</a>
+  <span>|</span>
+  <a href="https://t.me/mr_ruhul_001" target="_blank" class="pill">📩 Contact</a>
+</div>
+
+<script>
+let used = JSON.parse(localStorage.getItem("usedGmails") || "[]");
+let history = JSON.parse(localStorage.getItem("gmailHistory") || "[]");
+let copyCount = parseInt(localStorage.getItem("copyCount") || "0");
+
+function saveAll(){
+  localStorage.setItem("usedGmails", JSON.stringify(used));
+  localStorage.setItem("gmailHistory", JSON.stringify(history));
+  localStorage.setItem("copyCount", copyCount);
+  document.getElementById("copyCount").innerText = "Copied: " + copyCount;
+}
+saveAll();
+
+function randomCase(str){
+  let r="";
+  for(let c of str){
+    r += Math.random()>0.5 ? c.toUpperCase() : c.toLowerCase();
+  }
+  return r;
+}
+
+function showToast(){
+  let t=document.getElementById("toast");
+  t.style.display="block";
+  setTimeout(()=>t.style.display="none",1000);
+}
+
+function filterHistory(){
+  let input=document.getElementById("email").value.toLowerCase();
+  let box=document.getElementById("history");
+  box.innerHTML="";
+  let matches=history.filter(h=>h.toLowerCase().includes(input));
+  if(matches.length===0){
+    box.style.display="none";
+    return;
+  }
+  matches.slice().reverse().forEach(g=>{
+    let d=document.createElement("div");
+    d.className="drop-item";
+    d.innerText=g;
+
+    d.onclick=function(){
+      document.getElementById("email").value=g;
+      box.style.display="none";
+    };
+
+    let timer;
+    d.onmousedown = d.ontouchstart = function(){
+      timer=setTimeout(()=>{
+        history = history.filter(h=>h!==g);
+        saveAll();
+        filterHistory();
+      },2000);
+    };
+    d.onmouseup = d.onmouseleave = d.ontouchend = function(){
+      clearTimeout(timer);
+    };
+
+    box.appendChild(d);
+  });
+  box.style.display="block";
+}
+
+document.addEventListener("click", function(e){
+  let input=document.getElementById("email");
+  let dropdown=document.getElementById("history");
+  if(!input.contains(e.target) && !dropdown.contains(e.target)){
+    dropdown.style.display="none";
+  }
+});
+
+function generate(){
+  let email=document.getElementById("email").value.trim();
+  let count=parseInt(document.getElementById("count").value);
+  let out=document.getElementById("output");
+  out.innerHTML="";
+  document.getElementById("history").style.display="none";
+
+  if(!email.endsWith("@gmail.com")){
+    alert("Please enter a valid Gmail address");
+    return;
+  }
+
+  if(!history.includes(email)){
+    history.push(email);
+    saveAll();
+  }
+
+  let name=email.replace("@gmail.com","");
+  let attempts=0;
+
+  while(out.children.length<count && attempts<count*20){
+    attempts++;
+    let gmail=randomCase(name)+"@gmail.com";
+    if(used.includes(gmail)) continue;
+
+    let div=document.createElement("div");
+    div.className="item";
+    div.innerText=gmail;
+    div.onclick=function(){
+      navigator.clipboard.writeText(gmail);
+      used.push(gmail);
+      copyCount++;
+      saveAll();
+      div.remove();
+      showToast();
+    };
+    out.appendChild(div);
+  }
+
+  if(out.children.length===0){
+    out.innerHTML =
+      "<div class='info'><strong>This Gmail is fully exhausted.</strong><br>You can use a new Gmail.</div>";
+  }
+}
+
+function clearOutput(){
+  document.getElementById("output").innerHTML="";
+}
+</script>
+
+</body>
+</html>
