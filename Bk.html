@@ -76,6 +76,11 @@ button{
   font-size:28px;
   background:#d32f2f
 }
+.empty{
+  text-align:center;
+  color:#777;
+  margin-top:40px
+}
 </style>
 </head>
 
@@ -132,7 +137,7 @@ from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs }
 from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-/* 🔴 Firebase config */
+/* Firebase config */
 const firebaseConfig = {
   apiKey: "AIzaSyCXs85Y0GzKbQqY5V3yQY-MysMl_4ABk9U",
   authDomain: "bikeledger2k.firebaseapp.com",
@@ -151,7 +156,7 @@ let rides=[];
 let passengers=[];
 let currentScreen="home";
 
-/* UI refs */
+/* UI */
 const home=document.getElementById("home");
 const add=document.getElementById("add");
 const details=document.getElementById("details");
@@ -205,6 +210,15 @@ async function loadRides(){
 function renderHome(){
   let due=0, paid=0;
   list.innerHTML="";
+
+  if(rides.length===0){
+    list.innerHTML = `
+      <div class="empty">
+        এখনো কোনো হিসাব নেই<br>
+        নিচের ➕ বাটনে চাপ দিয়ে শুরু করুন
+      </div>`;
+  }
+
   rides.forEach(r=>{
     due+=r.due;
     paid+=r.paid;
@@ -220,6 +234,7 @@ function renderHome(){
       <div class="amount">৳ ${r.due}</div>
     </div>`;
   });
+
   totalDue.innerText=due;
   totalPaid.innerText=paid;
 }
