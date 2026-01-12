@@ -6,8 +6,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body{font-family:system-ui;background:#fff7ee;margin:0;padding:12px}
+body{
+  font-family: system-ui, Arial;
+  background:#fff7ee;
+  margin:0;
+  padding:12px
+}
 h2{text-align:center;margin:8px 0}
+
+button,input,select{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  font-size:15px;
+  border-radius:8px;
+  border:1px solid #ccc
+}
+button{
+  background:#333;
+  color:#fff;
+  border:none
+}
+.hidden{display:none}
 
 .header{
   background:#f3d3a1;
@@ -34,44 +54,28 @@ h2{text-align:center;margin:8px 0}
   box-shadow:0 2px 6px rgba(0,0,0,.08)
 }
 .avatar{
-  width:42px;height:42px;border-radius:50%;
+  width:42px;height:42px;
+  border-radius:50%;
   background:#f1c40f;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-weight:bold
 }
 .name{font-weight:bold}
 .time{font-size:12px;color:#777}
 .amount{font-weight:bold;color:#c0392b}
 
-button{
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:#333;
-  color:#fff;
-  font-size:15px
-}
-
 .fab{
   position:fixed;
   right:20px;
   bottom:20px;
-  background:#d32f2f;
   width:56px;
   height:56px;
   border-radius:50%;
-  font-size:28px
+  font-size:28px;
+  background:#d32f2f
 }
-
-input,select{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border-radius:6px;
-  border:1px solid #ccc
-}
-
-.hidden{display:none}
 </style>
 </head>
 
@@ -94,14 +98,20 @@ input,select{
   <button class="fab" onclick="openAdd()">+</button>
 </div>
 
-<!-- ADD RIDE -->
+<!-- ADD -->
 <div id="add" class="hidden">
   <h3>➕ ভাড়া যোগ</h3>
-  <select id="passenger"></select>
+
+  <select id="passenger">
+    <option value="">যাত্রী নির্বাচন করুন</option>
+  </select>
+
   <input id="newPassenger" placeholder="নতুন যাত্রীর নাম (একবার)">
   <button onclick="addPassenger()">যাত্রী যোগ</button>
+
   <input id="fare" type="number" placeholder="মোট ভাড়া">
-  <input id="paid" type="number" placeholder="এখন পাওয়া">
+  <input id="paid" type="number" placeholder="এখন পাওয়া টাকা">
+
   <button onclick="saveRide()">সেভ করুন</button>
   <button onclick="backHome()">← Back</button>
 </div>
@@ -119,7 +129,7 @@ input,select{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
 from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, where }
+import { getFirestore, collection, addDoc, getDocs }
 from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 /* 🔴 YOUR FIREBASE CONFIG */
@@ -135,48 +145,56 @@ const auth = getAuth();
 const db = getFirestore();
 const provider = new GoogleAuthProvider();
 
-let user=null, rides=[], passengers=[];
+/* STATE */
+let user=null;
+let rides=[];
+let passengers=[];
 
-/* UI refs */
-const home=document.getElementById("home");
-const add=document.getElementById("add");
-const details=document.getElementById("details");
+/* UI */
+const home = document.getElementById("home");
+const add = document.getElementById("add");
+const details = document.getElementById("details");
+const list = document.getElementById("list");
 
-/* LOGIN */
-loginBtn.onclick=()=>signInWithPopup(auth,provider);
-logoutBtn.onclick=()=>signOut(auth);
+/* AUTH */
+loginBtn.onclick = ()=>signInWithPopup(auth,provider);
+logoutBtn.onclick = ()=>signOut(auth);
 
 onAuthStateChanged(auth, async u=>{
-  if(u){
-    user=u;
-    loginBtn.classList.add("hidden");
-    logoutBtn.classList.remove("hidden");
-    home.classList.remove("hidden");
-    await loadPassengers();
-    await loadRides();
-    renderHome();
-  }
+  if(!u) return;
+  user=u;
+  loginBtn.classList.add("hidden");
+  logoutBtn.classList.remove("hidden");
+  home.classList.remove("hidden");
+  await loadPassengers();
+  await loadRides();
+  renderHome();
 });
 
 /* LOAD DATA */
 async function loadPassengers(){
   passengers=[];
-  const snap=await getDocs(collection(db,"users",user.uid,"passengers"));
-  snap.forEach(d=>passengers.push(d.data().name));
+  passenger.innerHTML='<option value="">যাত্রী নির্বাচন করুন</option>';
+  const snap = await getDocs(collection(db,"users",user.uid,"passengers"));
+  snap.forEach(d=>{
+    passengers.push(d.data().name);
+    passenger.innerHTML+=`<option>${d.data().name}</option>`;
+  });
 }
 
 async function loadRides(){
   rides=[];
-  const snap=await getDocs(collection(db,"users",user.uid,"rides"));
+  const snap = await getDocs(collection(db,"users",user.uid,"rides"));
   snap.forEach(d=>rides.push(d.data()));
 }
 
-/* HOME */
+/* HOME RENDER */
 function renderHome(){
-  let due=0,paid=0;
+  let due=0, paid=0;
   list.innerHTML="";
   rides.forEach(r=>{
-    due+=r.due; paid+=r.paid;
+    due+=r.due;
+    paid+=r.paid;
     list.innerHTML+=`
     <div class="card" onclick="openDetails('${r.name}')">
       <div style="display:flex;gap:10px">
@@ -189,57 +207,69 @@ function renderHome(){
       <div class="amount">৳ ${r.due}</div>
     </div>`;
   });
-  totalDue.innerText=due;
-  totalPaid.innerText=paid;
+  totalDue.innerText = due;
+  totalPaid.innerText = paid;
 }
 
-/* ADD */
-window.openAdd=()=>{
+/* ADD FLOW */
+window.openAdd = ()=>{
   home.classList.add("hidden");
   add.classList.remove("hidden");
-  passenger.innerHTML='<option value="">যাত্রী নির্বাচন</option>';
-  passengers.forEach(p=>passenger.innerHTML+=`<option>${p}</option>`);
 };
 
-window.addPassenger=async()=>{
-  const n=newPassenger.value;
-  if(!n) return;
-  await addDoc(collection(db,"users",user.uid,"passengers"),{name:n});
+window.addPassenger = async ()=>{
+  const name = newPassenger.value.trim();
+  if(!name) return alert("নাম লিখুন");
+  await addDoc(collection(db,"users",user.uid,"passengers"),{name});
   newPassenger.value="";
-  loadPassengers();
+  await loadPassengers();
+  alert("✅ যাত্রী যোগ হয়েছে");
 };
 
-window.saveRide=async()=>{
-  const name=passenger.value;
-  const fare=+document.getElementById("fare").value;
-  const paid=+document.getElementById("paid").value;
-  if(!name||!fare) return alert("ডাটা দিন");
+window.saveRide = async ()=>{
+  const name = passenger.value;
+  const fare = Number(document.getElementById("fare").value);
+  const paid = Number(document.getElementById("paid").value || 0);
+
+  if(!name) return alert("যাত্রী নির্বাচন করুন");
+  if(!fare) return alert("ভাড়া লিখুন");
+
   await addDoc(collection(db,"users",user.uid,"rides"),{
-    name,fare,paid,due:fare-paid,time:new Date().toLocaleString()
+    name,
+    fare,
+    paid,
+    due: fare-paid,
+    time: new Date().toLocaleString()
   });
-  backHome();
+
+  document.getElementById("fare").value="";
+  document.getElementById("paid").value="";
+
   await loadRides();
   renderHome();
+  backHome();
+  alert("✅ ভাড়া সেভ হয়েছে");
 };
 
 /* DETAILS */
-window.openDetails=(name)=>{
+window.openDetails = (name)=>{
   home.classList.add("hidden");
   details.classList.remove("hidden");
-  dName.innerText=name;
-  const list2=rides.filter(r=>r.name===name);
+  dName.innerText = name;
+
   let total=0;
   dList.innerHTML="";
-  list2.forEach(r=>{
+  rides.filter(r=>r.name===name).forEach(r=>{
     total+=r.due;
-    dList.innerHTML+=`<div>${r.time} — বাকি ৳${r.due}</div>`;
+    dList.innerHTML+=`<div>${r.time} — বাকি ৳ ${r.due}</div>`;
   });
+
   dTotal.innerHTML=`মোট বাকি: ৳ ${total}`;
   smsBtn.href=`sms:?body=প্রিয় ${name}, আপনার মোট বাকি ভাড়া ${total} টাকা।`;
 };
 
 /* BACK */
-window.backHome=()=>{
+window.backHome = ()=>{
   add.classList.add("hidden");
   details.classList.add("hidden");
   home.classList.remove("hidden");
