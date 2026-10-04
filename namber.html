@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Number Manager Pro</title>
+
+<style>
+:root{
+  --bg:#0b1220;
+  --card:#111a2e;
+  --input:#020617;
+  --border:#1f2937;
+  --green:#22c55e;
+  --red:#ef4444;
+}
+body{
+  background:var(--bg);
+  color:#fff;
+  font-family:system-ui,sans-serif;
+  margin:0;
+  padding:16px;
+}
+.container{
+  max-width:420px;
+  margin:auto;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.topbar h2{
+  margin:0;
+}
+.reset{
+  background:#7c2d12;
+  border:none;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+.input-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+.input-row input{
+  flex:1;
+}
+.add-btn{
+  width:46px;
+  border:none;
+  border-radius:12px;
+  background:var(--green);
+  color:#022c22;
+  font-size:22px;
+  font-weight:700;
+  cursor:pointer;
+}
+input{
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--input);
+  color:#fff;
+  font-size:15px;
+}
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:8px;
+}
+.item{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+.item:active{
+  transform:scale(.98);
+}
+.item.copied{
+  border-color:var(--green);
+  box-shadow:0 0 0 1px rgba(34,197,94,.4);
+}
+.badge{
+  font-size:12px;
+  color:var(--green);
+  margin-top:4px;
+}
+.hint{
+  font-size:12px;
+  opacity:.6;
+  margin-top:6px;
+}
+.toast{
+  position:fixed;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--green);
+  color:#022c22;
+  padding:10px 16px;
+  border-radius:999px;
+  font-size:14px;
+  display:none;
+  z-index:999;
+}
+</style>
+</head>
+
+<body>
+
+<div class="toast" id="toast">Copied</div>
+
+<div class="container">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <h2>📦 Number Manager</h2>
+    <button class="reset" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- INPUT + ADD -->
+  <div class="input-row">
+    <input id="newNumber" placeholder="Type or paste numbers">
+    <button class="add-btn" onclick="manualAdd()">+</button>
+  </div>
+
+  <!-- FILE INPUT -->
+  <input type="file" id="fileInput" accept=".txt">
+  <div class="hint">TXT file · one number per line</div>
+
+  <!-- SEARCH -->
+  <input id="search" placeholder="Search number...">
+
+  <!-- LIST -->
+  <div class="list" id="list"></div>
+
+  <div class="hint">Tap to copy · Long-press to delete</div>
+</div>
+
+<script>
+let numbers = JSON.parse(localStorage.getItem("numbers") || "[]");
+
+const newNumber = document.getElementById("newNumber");
+const search = document.getElementById("search");
+const list = document.getElementById("list");
+const fileInput = document.getElementById("fileInput");
+const toast = document.getElementById("toast");
+
+function save(){
+  localStorage.setItem("numbers", JSON.stringify(numbers));
+}
+
+function showToast(text){
+  toast.textContent = text;
+  toast.style.display = "block";
+  setTimeout(()=>toast.style.display="none",900);
+}
+
+// 🔥 AUTO + ADD FUNCTION
+function addFromText(text){
+  text.split(/\s+/).forEach(v=>{
+    v = v.trim();
+    if(!v) return;
+
+    if(!v.startsWith("+")){
+      v = "+" + v;
+    }
+
+    if(!numbers.find(n => n.value === v)){
+      numbers.unshift({ value: v, copied: false });
+    }
+  });
+  save();
+  render(search.value);
+}
+
+function manualAdd(){
+  if(newNumber.value.trim()){
+    addFromText(newNumber.value.trim());
+    newNumber.value="";
+  }
+}
+
+// Enter auto add
+newNumber.addEventListener("keydown", e=>{
+  if(e.key === "Enter"){
+    manualAdd();
+  }
+});
+
+// Blur auto add
+newNumber.addEventListener("blur", ()=>{
+  manualAdd();
+});
+
+// File auto add
+fileInput.addEventListener("change", ()=>{
+  let f = fileInput.files[0];
+  if(!f) return;
+  let r = new FileReader();
+  r.onload = e => addFromText(e.target.result);
+  r.readAsText(f);
+  fileInput.value="";
+});
+
+function resetAll(){
+  if(!confirm("All numbers will be deleted. Continue?")) return;
+  numbers = [];
+  localStorage.removeItem("numbers");
+  render(search.value);
+}
+
+function render(filter=""){
+  list.innerHTML="";
+  numbers
+    .filter(n => n.value.toLowerCase().includes(filter.toLowerCase()))
+    .forEach((n,i)=>{
+      let d = document.createElement("div");
+      d.className = "item" + (n.copied ? " copied" : "");
+      d.innerHTML = `
+        <div>${n.value}</div>
+        ${n.copied ? '<div class="badge">✔ Copied</div>' : ""}
+      `;
+
+      let timer;
+
+      // Click → Copy
+      d.addEventListener("click", ()=>{
+        navigator.clipboard.writeText(n.value);
+        n.copied = true;
+        save();
+        render(search.value);
+        showToast("Copied");
+      });
+
+      // Long-press → Delete
+      d.addEventListener("mousedown", ()=>{
+        timer = setTimeout(()=>{
+          if(confirm("Delete this number?")){
+            numbers.splice(i,1);
+            save();
+            render(search.value);
+          }
+        },1200);
+      });
+      d.addEventListener("mouseup", ()=>clearTimeout(timer));
+      d.addEventListener("mouseleave", ()=>clearTimeout(timer));
+      d.addEventListener("touchstart", ()=>{
+        timer = setTimeout(()=>{
+          if(confirm("Delete this number?")){
+            numbers.splice(i,1);
+            save();
+            render(search.value);
+          }
+        },1200);
+      });
+      d.addEventListener("touchend", ()=>clearTimeout(timer));
+
+      list.appendChild(d);
+    });
+}
+
+search.oninput = e => render(e.target.value);
+render();
+</script>
+
+</body>
+</html>
